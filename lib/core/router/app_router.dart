@@ -1,4 +1,3 @@
-import 'package:effective_mobile_test/presentation/providers/theme_provider.dart';
 import 'package:effective_mobile_test/presentation/screens/favorites/favorites_screen.dart';
 import 'package:effective_mobile_test/presentation/screens/home/home_screen.dart';
 import 'package:effective_mobile_test/presentation/screens/settings/settings_screen.dart';
@@ -85,16 +84,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeModeProvider);
-    final isDark =
-        themeMode == ThemeMode.dark ||
-        (themeMode == ThemeMode.system &&
-            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    // final themeMode = ref.watch(themeModeProvider);
+    // final isDark =
+    //     themeMode == ThemeMode.dark ||
+    //     (themeMode == ThemeMode.system &&
+    //         MediaQuery.platformBrightnessOf(context) == Brightness.dark);
 
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: NavigationBar(
-        elevation: 3,
         selectedIndex: _currentIndex,
         onDestinationSelected: _onTap,
         destinations: const [

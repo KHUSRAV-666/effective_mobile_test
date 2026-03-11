@@ -21,7 +21,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _onScroll() {
-    // Если доскроллили почти до конца (за 200 пикселей)
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       ref.read(heroNotifierProvider.notifier).loadNextPage();
@@ -39,7 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final charactersAsync = ref.watch(heroNotifierProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Rick & Morty Heroes')),
+      appBar: AppBar(title: const Text('Герои Rick & Morty')),
       body: charactersAsync.when(
         data: (characters) => ListView.builder(
           controller: _scrollController,
@@ -49,7 +48,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (index < characters.length) {
               return HeroCard(hero: characters[index]);
             } else {
-              // В самом низу показываем лоадер
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.m),
                 child: Center(child: CircularProgressIndicator.adaptive()),

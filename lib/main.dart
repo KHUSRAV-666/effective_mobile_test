@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Загружаем сохраненную тему перед запуском
   final container = ProviderContainer();
   await container.read(themeModeProvider.notifier).loadTheme();
 
@@ -23,7 +22,7 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      title: 'Minimal Riverpod App',
+      title: 'Rick & Morty App',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
       theme: AppTheme.lightTheme,

@@ -6,6 +6,7 @@ class AppTheme {
   static const Color secondaryColor = Color(0xFF78A6C9); // EAEFF3   // E65C4F
 
   static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.light,
     primaryColor: primaryColor,
     colorScheme: const ColorScheme.light(
@@ -13,20 +14,35 @@ class AppTheme {
       secondary: secondaryColor,
     ),
     appBarTheme: const AppBarTheme(
-      elevation: 0,
+      elevation: 1,
+      shadowColor: Colors.black,
       centerTitle: true,
       backgroundColor: primaryColor,
       foregroundColor: Colors.white,
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedItemColor: primaryColor,
-      unselectedItemColor: Colors.grey,
-      type: BottomNavigationBarType.fixed,
+    navigationBarTheme: NavigationBarThemeData(
+      indicatorColor: primaryColor.withAlpha(78),
+      shadowColor: Colors.black,
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const TextStyle(
+            color: primaryColor,
+            fontWeight: FontWeight.bold,
+          );
+        }
+        return const TextStyle(color: Colors.black);
+      }),
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const IconThemeData(color: primaryColor);
+        }
+        return const IconThemeData(color: Colors.black);
+      }),
     ),
     cardTheme: const CardThemeData(
       margin: EdgeInsets.symmetric(
-        horizontal: AppSpacing.m,
-        vertical: AppSpacing.s,
+        horizontal: AppSpacing.s,
+        vertical: AppSpacing.xs,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(AppSpacing.s)),
@@ -43,6 +59,7 @@ class AppTheme {
   );
 
   static ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.dark,
     primaryColor: primaryColor,
     colorScheme: const ColorScheme.dark(
@@ -51,16 +68,46 @@ class AppTheme {
       surface: Color(0xFF1E1E1E),
     ),
     appBarTheme: const AppBarTheme(
-      elevation: 0,
+      elevation: 1,
+      shadowColor: Colors.white10,
       centerTitle: true,
       backgroundColor: Color(0xFF1E1E1E),
       foregroundColor: Colors.white,
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedItemColor: secondaryColor,
-      unselectedItemColor: Colors.grey,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Color(0xFF1E1E1E),
+
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: const Color(0xFF1E1E1E),
+      indicatorColor: primaryColor.withAlpha(100),
+      shadowColor: Colors.white,
+      elevation: 3,
+
+      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const TextStyle(
+            color: secondaryColor,
+            fontWeight: FontWeight.bold,
+          );
+        }
+        return const TextStyle(color: Colors.white70);
+      }),
+
+      iconTheme: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return const IconThemeData(color: Colors.white);
+        }
+        return const IconThemeData(color: Colors.white70);
+      }),
+    ),
+
+    cardTheme: const CardThemeData(
+      color: Color(0xFF2C2C2C),
+      margin: EdgeInsets.symmetric(
+        horizontal: AppSpacing.s,
+        vertical: AppSpacing.xs,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(AppSpacing.s)),
+      ),
     ),
   );
 }

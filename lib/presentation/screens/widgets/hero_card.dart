@@ -1,6 +1,7 @@
 import 'package:effective_mobile_test/core/themes/app_spacing.dart';
-import 'package:effective_mobile_test/data/models/hero_model.dart'; // проверьте путь к модели
+import 'package:effective_mobile_test/data/models/hero_model.dart';
 import 'package:effective_mobile_test/presentation/providers/favorites_provider.dart';
+import 'package:effective_mobile_test/presentation/widgets/rotating_favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,16 +14,13 @@ class HeroCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
 
-    // Подписываемся на список избранных
     final favoriteIds = ref.watch(favoritesProvider);
     final isFavorite = favoriteIds.contains(hero.id);
 
     return Card(
       child: InkWell(
         borderRadius: BorderRadius.circular(AppSpacing.s),
-        onTap: () {
-          /* Навигация */
-        },
+        onTap: () {},
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,27 +49,25 @@ class HeroCard extends ConsumerWidget {
                         _StatusRow(status: hero.status, species: hero.species),
                         const SizedBox(height: AppSpacing.s),
                         Text(
-                          'Last known location:',
+                          'Последнее местоположение:',
                           style: theme.textTheme.bodySmall,
                         ),
-                        Text(hero.location, style: theme.textTheme.bodyMedium),
+                        Text(
+                          hero.location,
+                          style: theme.textTheme.bodyMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
                     ),
                   ),
 
-                  // Звездочка с логикой
                   Positioned(
                     top: 4,
                     right: 4,
-                    child: IconButton(
-                      icon: Icon(
-                        isFavorite ? Icons.star : Icons.star_border,
-                        color: isFavorite
-                            ? Colors.amber
-                            : theme.colorScheme.outline,
-                      ),
+                    child: RotatingFavoriteButton(
+                      isFavorite: isFavorite,
                       onPressed: () {
-                        // Вызываем метод переключения
                         ref
                             .read(favoritesProvider.notifier)
                             .toggleFavorite(hero.id);
@@ -96,16 +92,14 @@ class _HeroImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      // Скругляем только левые углы, чтобы картинка примыкала к краю карточки
       borderRadius: const BorderRadius.horizontal(
         left: Radius.circular(AppSpacing.s),
       ),
       child: Image.network(
         imageUrl,
         width: 120,
-        height: 140, // Фиксируем высоту для ровной сетки
+        height: 140,
         fit: BoxFit.cover,
-        // Плавное появление картинки после загрузки
         frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
           if (wasSynchronouslyLoaded) return child;
           return AnimatedOpacity(
@@ -146,7 +140,6 @@ class _StatusRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Определяем цвет индикатора
     final Color statusColor = switch (status.toLowerCase()) {
       'alive' => Colors.green,
       'dead' => Colors.red,
@@ -156,14 +149,12 @@ class _StatusRow extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Индикатор-точка
         Container(
           width: 8,
           height: 8,
           decoration: BoxDecoration(
             color: statusColor,
             shape: BoxShape.circle,
-            // Небольшое свечение для красоты
             boxShadow: [
               BoxShadow(
                 color: statusColor.withAlpha(104),

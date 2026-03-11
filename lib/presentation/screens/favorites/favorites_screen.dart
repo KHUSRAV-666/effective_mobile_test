@@ -12,14 +12,14 @@ class FavoritesScreen extends ConsumerWidget {
     final favoritesAsync = ref.watch(favoriteHeroesProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Favorite Heroes')),
+      appBar: AppBar(title: const Text('Избранные')),
       body: favoritesAsync.when(
         data: (heroes) {
           if (heroes.isEmpty) {
             return const _EmptyFavorites();
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(AppSpacing.m),
+            padding: const EdgeInsets.all(AppSpacing.s),
             itemCount: heroes.length,
             itemBuilder: (context, index) => HeroCard(hero: heroes[index]),
           );
@@ -43,7 +43,7 @@ class _EmptyFavorites extends StatelessWidget {
         children: [
           Icon(Icons.star_border, size: 80, color: Colors.grey[400]),
           const SizedBox(height: AppSpacing.m),
-          const Text('No favorites yet', style: TextStyle(fontSize: 18)),
+          const Text('Список избранных пуст', style: TextStyle(fontSize: 18)),
         ],
       ),
     );

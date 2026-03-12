@@ -1,7 +1,7 @@
-import 'package:effective_mobile_test/presentation/providers/theme_provider.dart';
+import 'package:effective_mobile_test/shared/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:effective_mobile_test/core/themes/app_spacing.dart';
+import 'package:effective_mobile_test/core/theme/app_spacing.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});

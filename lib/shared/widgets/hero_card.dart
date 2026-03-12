@@ -1,7 +1,7 @@
-import 'package:effective_mobile_test/core/themes/app_spacing.dart';
-import 'package:effective_mobile_test/data/models/hero_model.dart';
-import 'package:effective_mobile_test/presentation/providers/favorites_provider.dart';
-import 'package:effective_mobile_test/presentation/widgets/rotating_favorite_button.dart';
+import 'package:effective_mobile_test/core/theme/app_spacing.dart';
+import 'package:effective_mobile_test/features/home/data/models/hero_model.dart';
+import 'package:effective_mobile_test/features/favorite/presentation/providers/favorites_provider.dart';
+import 'package:effective_mobile_test/shared/widgets/rotating_favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -67,10 +67,37 @@ class HeroCard extends ConsumerWidget {
                     right: 4,
                     child: RotatingFavoriteButton(
                       isFavorite: isFavorite,
-                      onPressed: () {
-                        ref
+                      onPressed: () async {
+                        final isAdded = await ref
                             .read(favoritesProvider.notifier)
                             .toggleFavorite(hero.id);
+
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                isAdded
+                                    ? '${hero.name} добавлен в избранное'
+                                    : '${hero.name} удален из избранного',
+                              ),
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: isAdded
+                                  ? Colors.green
+                                  : Colors.redAccent,
+                              action: isAdded
+                                  ? null
+                                  : SnackBarAction(
+                                      label: 'Отмена',
+                                      textColor: Colors.white,
+                                      onPressed: () => ref
+                                          .read(favoritesProvider.notifier)
+                                          .toggleFavorite(hero.id),
+                                    ),
+                            ),
+                          );
+                        }
                       },
                     ),
                   ),

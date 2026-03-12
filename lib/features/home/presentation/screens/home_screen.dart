@@ -1,6 +1,6 @@
-import 'package:effective_mobile_test/core/themes/app_spacing.dart';
-import 'package:effective_mobile_test/presentation/providers/hero_provider.dart';
-import 'package:effective_mobile_test/presentation/screens/widgets/hero_card.dart';
+import 'package:effective_mobile_test/core/theme/app_spacing.dart';
+import 'package:effective_mobile_test/features/home/presentation/providers/hero_provider.dart';
+import 'package:effective_mobile_test/shared/widgets/hero_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

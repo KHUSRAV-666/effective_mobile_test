@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:effective_mobile_test/core/theme/app_spacing.dart';
 
+part '../widgets/theme_option.dart';
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -10,7 +12,6 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final themeNotifier = ref.read(themeModeProvider.notifier);
-    // final isDark = themeNotifier.isDarkMode(context);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Настройки')),
@@ -21,29 +22,28 @@ class SettingsScreen extends ConsumerWidget {
           _buildSectionTitle(context, 'Внешний вид'),
           const SizedBox(height: 8),
 
-          // Обертка для группы радио-кнопок
           RadioGroup<ThemeMode>(
             onChanged: (mode) => themeNotifier.setTheme(mode!),
             groupValue: themeMode,
             child: Column(
               children: [
-                _buildThemeOption(
-                  context,
+                ThemeOption(
                   title: 'Светлый режим',
                   icon: Icons.light_mode,
                   value: ThemeMode.light,
+                  currentThemeMode: themeMode,
                 ),
-                _buildThemeOption(
-                  context,
+                ThemeOption(
                   title: 'Темный режим',
                   icon: Icons.dark_mode,
                   value: ThemeMode.dark,
+                  currentThemeMode: themeMode,
                 ),
-                _buildThemeOption(
-                  context,
+                ThemeOption(
                   title: 'Системный',
                   icon: Icons.settings,
                   value: ThemeMode.system,
+                  currentThemeMode: themeMode,
                 ),
               ],
             ),
@@ -61,40 +61,6 @@ class SettingsScreen extends ConsumerWidget {
         style: Theme.of(
           context,
         ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildThemeOption(
-    BuildContext context, {
-    required String title,
-    required IconData icon,
-    required ThemeMode value,
-  }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: RadioListTile<ThemeMode>(
-        value: value,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.s),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withAlpha(26),
-                borderRadius: BorderRadius.circular(AppSpacing.s),
-              ),
-              child: Icon(
-                icon,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(title),
-          ],
-        ),
-        activeColor: Theme.of(context).colorScheme.primary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.s),
       ),
     );
   }

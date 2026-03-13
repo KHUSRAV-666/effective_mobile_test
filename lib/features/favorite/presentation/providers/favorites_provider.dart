@@ -1,53 +1,36 @@
-import 'package:effective_mobile_test/core/store/shared_prefs_helper.dart';
 import 'package:effective_mobile_test/features/home/data/models/hero_model.dart';
 import 'package:effective_mobile_test/features/home/data/repositories/hero_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final favoritesProvider =
-    StateNotifierProvider<FavoritesNotifier, List<String>>((ref) {
-      final storage = ref.watch(sharedPrefsHelperProvider);
-      return FavoritesNotifier(storage);
+    StateNotifierProvider<FavoritesNotifier, AsyncValue<List<HeroModel>>>((
+      ref,
+    ) {
+      final repository = ref.watch(heroRepositoryProvider);
+      return FavoritesNotifier(repository);
     });
 
-class FavoritesNotifier extends StateNotifier<List<String>> {
-  final SharedPrefsHelper _storage;
-  static const _key = 'favorite_heroes_ids';
+class FavoritesNotifier extends StateNotifier<AsyncValue<List<HeroModel>>> {
+  final HeroRepository _repository;
 
-  FavoritesNotifier(this._storage) : super([]) {
-    _init();
+  FavoritesNotifier(this._repository) : super(const AsyncValue.loading()) {
+    loadFavorites();
   }
 
-  void _init() {
-    state = _storage.getStringList(_key);
-  }
-
-  Future<bool> toggleFavorite(String id) async {
-    final currentIds = List<String>.from(state);
-    bool isAdded = false;
-
-    if (currentIds.contains(id)) {
-      currentIds.remove(id);
-      isAdded = false;
-    } else {
-      currentIds.add(id);
-      isAdded = true;
+  Future<void> loadFavorites() async {
+    state = const AsyncValue.loading();
+    try {
+      final favorites = await _repository.getFavoriteCharacters();
+      state = AsyncValue.data(favorites);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
     }
-
-    state = currentIds;
-    await _storage.setStringList(_key, currentIds);
-
-    return isAdded;
   }
 
-  bool isFavorite(String id) => state.contains(id);
+  Future<bool> toggleFavorite(HeroModel hero) async {
+    final newStatus = !hero.isFavorite;
+    await _repository.toggleFavorite(hero);
+    await loadFavorites();
+    return newStatus;
+  }
 }
-
-final favoriteHeroesProvider = FutureProvider<List<HeroModel>>((ref) async {
-  final ids = ref.watch(favoritesProvider);
-
-  if (ids.isEmpty) return [];
-
-  final repository = ref.read(heroRepositoryProvider);
-
-  return repository.getMultipleCharacters(ids);
-});

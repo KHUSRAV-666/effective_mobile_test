@@ -1,6 +1,6 @@
 import 'package:effective_mobile_test/core/theme/app_spacing.dart';
 import 'package:effective_mobile_test/features/favorite/presentation/providers/favorites_provider.dart';
-import 'package:effective_mobile_test/shared/widgets/hero_card.dart';
+import 'package:effective_mobile_test/shared/widgets/hero/hero_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,7 +9,7 @@ class FavoritesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favoritesAsync = ref.watch(favoriteHeroesProvider);
+    final favoritesAsync = ref.watch(favoritesProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Избранные')),

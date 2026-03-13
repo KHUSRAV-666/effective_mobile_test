@@ -15,7 +15,7 @@ class HeroNotifier extends AsyncNotifier<List<HeroModel>> {
 
   @override
   Future<List<HeroModel>> build() async {
-    final result = await _repository.getAllCharacters(page: 1);
+    final result = await _repository.getCharacters(page: 1);
     return result['characters'] as List<HeroModel>;
   }
 
@@ -25,12 +25,22 @@ class HeroNotifier extends AsyncNotifier<List<HeroModel>> {
     _isLoadingMore = true;
     _currentPage++;
 
-    final result = await _repository.getAllCharacters(page: _currentPage);
+    final result = await _repository.getCharacters(page: _currentPage);
     final newCharacters = result['characters'] as List<HeroModel>;
 
     _hasNext = result['info']['next'] != null;
 
     state = AsyncData([...state.value ?? [], ...newCharacters]);
     _isLoadingMore = false;
+  }
+
+  void updateFavoriteLocal(int id, bool isFavorite) {
+    state.whenData((characters) {
+      final updatedList = characters.map((char) {
+        return char.id == id ? char.copyWith(isFavorite: isFavorite) : char;
+      }).toList();
+
+      state = AsyncValue.data(updatedList);
+    });
   }
 }

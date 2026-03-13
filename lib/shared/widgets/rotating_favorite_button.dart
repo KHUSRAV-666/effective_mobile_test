@@ -23,20 +23,16 @@ class RotatingFavoriteButton extends StatelessWidget {
     return IconButton(
       onPressed: onPressed,
       icon: TweenAnimationBuilder<double>(
-        key: ValueKey(isFavorite),
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: const Duration(milliseconds: 600),
+        tween: Tween<double>(begin: 0.0, end: isFavorite ? 1.0 : 0.0),
+        duration: const Duration(milliseconds: 2000),
         curve: Curves.easeInOutBack,
         builder: (context, value, child) {
-          return Transform.rotate(
-            // Поворот на 360 градусов (2 * pi)
-            angle: value * 2 * math.pi,
-            child: child,
-          );
+          return Transform.rotate(angle: value * 2 * math.pi, child: child);
         },
         child: Icon(
           isFavorite ? Icons.star : Icons.star_border,
           color: isFavorite ? activeColor : effectiveInactiveColor,
+          size: 28,
         ),
       ),
     );

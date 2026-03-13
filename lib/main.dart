@@ -1,44 +1,34 @@
 import 'package:effective_mobile_test/core/router/app_router.dart';
-import 'package:effective_mobile_test/core/store/shared_prefs_helper.dart';
+import 'package:effective_mobile_test/core/store/database_helper.dart';
 import 'package:effective_mobile_test/core/theme/app_theme.dart';
 import 'package:effective_mobile_test/shared/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final sharedPreferences = await SharedPreferences.getInstance();
+  final db = CharacterDb.instance;
+  await db.database;
+
+  final savedThemeIndex = await db.getIntSetting('theme_mode') ?? 2;
+  final initialTheme = ThemeMode.values[savedThemeIndex];
 
   runApp(
     ProviderScope(
       overrides: [
-        sharedPrefsHelperProvider.overrideWithValue(
-          SharedPrefsHelper(sharedPreferences),
-        ),
+        themeModeProvider.overrideWith((ref) => ThemeNotifier(initialTheme)),
       ],
       child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends ConsumerStatefulWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  ConsumerState<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() => ref.read(themeModeProvider.notifier).loadTheme());
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final router = ref.watch(routerProvider);
 

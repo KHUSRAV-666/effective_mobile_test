@@ -14,6 +14,7 @@
 
 - **Flutter**: 3.35.7
 - **State Management**: [Riverpod]
+- **Router**: [GoRouter]
 - **Local Database**: [sqflite]
 - **Image Caching**: [cached_network_image] & [flutter_cache_manager]
 - **Networking**: [http]
@@ -37,23 +38,29 @@
 
    ```
 
-2. ```bash
+2.
+
+```bash
    flutter pub get
 
-   ```
+```
 
-3. ```bash
+3.
+
+```bash
    flutter run
-   ```
+```
 
 ## Сборка APK
 
 # Debug версия
+
 ```bash
    flutter build apk --debug
 ```
 
 # Release версия
+
 ```bash
    flutter build apk --release
 ```

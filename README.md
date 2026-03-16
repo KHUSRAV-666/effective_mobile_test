@@ -15,7 +15,7 @@
 - **Flutter**: 3.35.7
 - **State Management**: [Riverpod]
 - **Router**: [GoRouter]
-- **Local Database**: [sqflite]
+- **Local Database**: [sqflite] & [path](для путей к БД)
 - **Image Caching**: [cached_network_image] & [flutter_cache_manager]
 - **Networking**: [http]
 - **Architecture** | Clean Architecture |

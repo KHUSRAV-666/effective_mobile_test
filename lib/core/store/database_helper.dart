@@ -74,6 +74,26 @@ class CharacterDb {
     await batch.commit(noResult: true);
   }
 
+  Future<void> replaceAllCharacters(
+    List<Map<String, dynamic>> charactersList,
+  ) async {
+    final db = await database;
+    final batch = db.batch();
+
+    batch.delete('characters');
+
+    for (var charMap in charactersList) {
+      batch.insert('characters', charMap);
+    }
+
+    await batch.commit(noResult: true);
+  }
+
+  Future<void> clearAllCharacters() async {
+    final db = await database;
+    await db.delete('characters');
+  }
+
   Future<void> updateFavoriteStatus(int id, bool isFavorite) async {
     final db = await database;
     await db.update(
@@ -97,5 +117,18 @@ class CharacterDb {
       whereArgs: [1],
       orderBy: 'name ASC',
     );
+  }
+
+  Future<bool> hasAnyCharacters() async {
+    final db = await database;
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM characters',
+    );
+
+    if (result.isNotEmpty && result.first['count'] != null) {
+      return (result.first['count'] as int) > 0;
+    }
+
+    return false;
   }
 }

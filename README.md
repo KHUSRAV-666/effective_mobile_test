@@ -1,16 +1,59 @@
-# effective_mobile_test
+# Effective Mobile Test - Rick & Morty App
 
-A new Flutter project.
+Приложение на Flutter для просмотра персонажей вселенной "Рик и Морти". Проект демонстрирует работу с пагинацией, локальным хранением данных и кешированием изображений.
 
-## Getting Started
+## Функциональные возможности
 
-This project is a starting point for a Flutter application.
+- **Список героев**: Загрузка персонажей из Rick and Morty API.
+- **Пагинация**: Бесконечный скролл с автоматической подгрузкой.
+- **Офлайн-режим**: Текстовые данные сохраняются в **SQLite**, а изображения кешируются во внутреннюю память.
+- **Pull-to-Refresh**: Принудительное обновление данных с очисткой локального кеша.
+- **Избранное**: Возможность сохранять персонажей локально.
 
-A few resources to get you started if this is your first Flutter project:
+## Технологический стек
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter**: 3.35.7
+- **State Management**: [Riverpod]
+- **Local Database**: [sqflite]
+- **Image Caching**: [cached_network_image] & [flutter_cache_manager]
+- **Networking**: [http]
+- **Architecture** | Clean Architecture |
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Требования
+
+Перед запуском убедитесь, что у вас установлены:
+
+- Flutter SDK (версия 3.x.x)
+- Dart SDK (версия 3.x.x)
+- Android Studio / Xcode (для эмуляторов)
+
+## Сборка и запуск
+
+1. **Клонируйте репозиторий:**
+
+   ```bash
+   git clone [https://github.com/KHUSRAV-666/effective_mobile_test.git](https://github.com/KHUSRAV-666/effective_mobile_test.git)
+   cd effective_mobile_test
+
+   ```
+
+2. ```bash
+   flutter pub get
+
+   ```
+
+3. ```bash
+   flutter run
+   ```
+
+## Сборка APK
+
+# Debug версия
+```bash
+   flutter build apk --debug
+```
+
+# Release версия
+```bash
+   flutter build apk --release
+```

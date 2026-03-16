@@ -11,30 +11,24 @@ class _HeroImage extends StatelessWidget {
       borderRadius: const BorderRadius.horizontal(
         left: Radius.circular(AppSpacing.s),
       ),
-      child: Image.network(
-        imageUrl,
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
         width: 120,
         height: 140,
         fit: BoxFit.cover,
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded) return child;
-          return AnimatedOpacity(
-            opacity: frame == null ? 0 : 1,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-            child: child,
-          );
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            width: 120,
-            height: 140,
-            color: Theme.of(context).colorScheme.surface.withAlpha(78),
-            child: const Center(child: CircularProgressIndicator.adaptive()),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) => Container(
+        cacheManager: HeroCacheManager.instance,
+
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeInCurve: Curves.easeOut,
+
+        placeholder: (context, url) => Container(
+          width: 120,
+          height: 140,
+          color: Theme.of(context).colorScheme.surface.withAlpha(78),
+          child: const Center(child: CircularProgressIndicator.adaptive()),
+        ),
+
+        errorWidget: (context, url, error) => Container(
           width: 120,
           height: 140,
           color: Theme.of(context).colorScheme.errorContainer,

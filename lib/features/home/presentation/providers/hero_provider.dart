@@ -9,28 +9,57 @@ final heroNotifierProvider =
 
 class HeroNotifier extends AsyncNotifier<List<HeroModel>> {
   final _repository = HeroRepository();
+
   int _currentPage = 1;
   bool _hasNext = true;
   bool _isLoadingMore = false;
 
   @override
   Future<List<HeroModel>> build() async {
+    _currentPage = 1;
+    _hasNext = true;
     final result = await _repository.getCharacters(page: 1);
     return result['characters'] as List<HeroModel>;
   }
 
+  Future<void> refresh() async {
+    _currentPage = 1;
+    _hasNext = true;
+    _isLoadingMore = false;
+
+    state = await AsyncValue.guard<List<HeroModel>>(() async {
+      final result = await _repository.getCharacters(
+        page: 1,
+        forceRefresh: true,
+      );
+
+      final characters = result['characters'] as List<HeroModel>;
+      return characters;
+    });
+  }
+
   Future<void> loadNextPage() async {
-    if (_isLoadingMore || !_hasNext) return;
+    if (_isLoadingMore || !_hasNext || state.isLoading) return;
 
     _isLoadingMore = true;
-    _currentPage++;
+    final nextPage = _currentPage + 1;
 
-    final result = await _repository.getCharacters(page: _currentPage);
-    final newCharacters = result['characters'] as List<HeroModel>;
+    final result = await AsyncValue.guard<List<HeroModel>>(() async {
+      final res = await _repository.getCharacters(page: nextPage);
+      final newCharacters = res['characters'] as List<HeroModel>;
 
-    _hasNext = result['info']['next'] != null;
+      _hasNext = res['info']['next'] != null;
+      _currentPage = nextPage;
 
-    state = AsyncData([...state.value ?? [], ...newCharacters]);
+      return [...(state.value ?? []), ...newCharacters];
+    });
+
+    if (result.hasError) {
+      state = AsyncValue.data(state.value ?? []);
+    } else {
+      state = result;
+    }
+
     _isLoadingMore = false;
   }
 

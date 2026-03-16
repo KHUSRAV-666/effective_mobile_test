@@ -40,24 +40,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Герои Rick & Morty')),
       body: charactersAsync.when(
-        data: (characters) => ListView.builder(
-          controller: _scrollController,
-          padding: const EdgeInsets.all(AppSpacing.s),
-          itemCount: characters.length + 1,
-          itemBuilder: (context, index) {
-            if (index < characters.length) {
-              return HeroCard(hero: characters[index]);
-            } else {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.m),
-                child: Center(child: CircularProgressIndicator.adaptive()),
-              );
-            }
+        data: (characters) => RefreshIndicator(
+          color: Theme.of(context).colorScheme.primary,
+          onRefresh: () async {
+            await ref.read(heroNotifierProvider.notifier).refresh();
           },
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(AppSpacing.s),
+            itemCount: characters.length + 1,
+            itemBuilder: (context, index) {
+              if (index < characters.length) {
+                return HeroCard(hero: characters[index]);
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppSpacing.m),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                );
+              }
+            },
+          ),
         ),
         loading: () =>
             const Center(child: CircularProgressIndicator.adaptive()),
-        error: (err, stack) => Center(child: Text('Ошибка: $err')),
+        error: (err, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Ошибка: $err'),
+              const SizedBox(height: AppSpacing.m),
+              ElevatedButton(
+                onPressed: () => ref.refresh(heroNotifierProvider),
+                child: const Text('Повторить'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

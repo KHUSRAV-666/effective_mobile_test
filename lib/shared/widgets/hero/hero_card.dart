@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:effective_mobile_test/core/store/hero_cache_manager.dart';
 import 'package:effective_mobile_test/core/theme/app_spacing.dart';
 import 'package:effective_mobile_test/features/home/data/models/hero_model.dart';
 import 'package:effective_mobile_test/features/favorite/presentation/providers/favorites_provider.dart';
@@ -76,29 +78,29 @@ class HeroCard extends ConsumerWidget {
                     child: RotatingFavoriteButton(
                       isFavorite: isFavorite,
                       onPressed: () async {
-                        final isAdded = await ref
-                            .read(favoritesProvider.notifier)
-                            .toggleFavorite(hero);
+                        final notifier = ref.read(favoritesProvider.notifier);
+
+                        final isAdded = await notifier.toggleFavorite(hero);
+
+                        if (!context.mounted) return;
 
                         ref
                             .read(heroNotifierProvider.notifier)
                             .updateFavoriteLocal(hero.id, isAdded);
 
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                isAdded
-                                    ? '${hero.name} добавлен(а) в избранное'
-                                    : '${hero.name} удален(а) из избранных',
-                              ),
-                              backgroundColor: isAdded
-                                  ? Colors.green
-                                  : Colors.redAccent,
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isAdded
+                                  ? '${hero.name} добавлен(а) в избранное'
+                                  : '${hero.name} удален(а) из избранных',
                             ),
-                          );
-                        }
+                            backgroundColor: isAdded
+                                ? Colors.green
+                                : Colors.redAccent,
+                          ),
+                        );
                       },
                     ),
                   ),

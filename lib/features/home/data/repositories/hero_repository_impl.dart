@@ -15,40 +15,23 @@ class HeroRepository {
     bool forceRefresh = false,
   }) async {
     try {
-      if (forceRefresh && page == 1) {
-        return await _fetchFromNetwork(page, forceRefresh);
-      }
-
-      final response = await http.get(Uri.parse('$_baseUrl?page=$page'));
+      final response = await http
+          .get(Uri.parse('$_baseUrl?page=$page'))
+          .timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
-        return await _processNetworkResponse(response, page);
-      } else {
-        throw Exception('Ошибка загрузки: ${response.statusCode}');
-      }
-    } catch (e) {
-      return await _getFromCache(page, e);
-    }
-  }
-
-  Future<Map<String, dynamic>> _fetchFromNetwork(
-    int page,
-    bool forceRefresh,
-  ) async {
-    try {
-      final response = await http.get(Uri.parse('$_baseUrl?page=$page'));
-
-      if (response.statusCode == 200) {
-        if (forceRefresh) {
-          await dbHelper.clearAllCharacters();
-        }
-
         return await _processNetworkResponse(response, page, forceRefresh);
       } else {
-        throw Exception('Ошибка загрузки: ${response.statusCode}');
+        throw Exception('Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Ошибка сети: $e');
+      final cacheData = await _getFromCache(page, e);
+
+      if ((cacheData['characters'] as List).isEmpty && page == 1) {
+        throw Exception('Данные отсутствуют. Проверьте интернет.');
+      }
+
+      return cacheData;
     }
   }
 

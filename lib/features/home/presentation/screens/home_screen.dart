@@ -35,6 +35,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(heroNotifierProvider, (previous, next) {
+      if (next is AsyncError && next.hasValue) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Нет подключения к сети. Показываем сохраненные данные.',
+            ),
+            action: SnackBarAction(label: 'OK', onPressed: () {}),
+          ),
+        );
+      }
+    });
     final charactersAsync = ref.watch(heroNotifierProvider);
 
     return Scaffold(

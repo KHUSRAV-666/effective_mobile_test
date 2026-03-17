@@ -1,3 +1,4 @@
+
 import 'package:effective_mobile_test/core/router/app_router.dart';
 import 'package:effective_mobile_test/core/store/database_helper.dart';
 import 'package:effective_mobile_test/core/theme/app_theme.dart';

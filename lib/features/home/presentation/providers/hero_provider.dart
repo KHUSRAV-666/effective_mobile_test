@@ -15,23 +15,26 @@ class HeroNotifier extends AsyncNotifier<List<HeroModel>> {
   bool _isLoadingMore = false;
 
   @override
+  @override
   Future<List<HeroModel>> build() async {
-    _currentPage = 1;
-    _hasNext = true;
     final result = await _repository.getCharacters(page: 1);
+    _currentPage = 1;
+    _hasNext = result['info']['next'] != null;
     return result['characters'] as List<HeroModel>;
   }
 
   Future<void> refresh() async {
     final result = await AsyncValue.guard<List<HeroModel>>(() async {
       final res = await _repository.getCharacters(page: 1, forceRefresh: true);
+
+      _currentPage = 1;
+      _hasNext = res['info']['next'] != null;
       return res['characters'] as List<HeroModel>;
     });
 
     if (result.hasError) {
       state = AsyncValue.data(state.value ?? []).copyWithPrevious(result);
     } else {
-      _currentPage = 1;
       state = result;
     }
   }

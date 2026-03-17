@@ -107,7 +107,7 @@ class HeroRepository {
       };
     }
 
-    throw Exception('Нет сети и данных в кэше: $error');
+    throw Exception('Нет сети и данных в кэше');
   }
 
   Future<void> toggleFavorite(HeroModel hero) async {

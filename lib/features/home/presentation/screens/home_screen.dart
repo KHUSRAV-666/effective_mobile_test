@@ -82,7 +82,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Text('Ошибка: $err'),
               const SizedBox(height: AppSpacing.m),
               ElevatedButton(
-                onPressed: () => ref.refresh(heroNotifierProvider),
+                onPressed: () => ref.invalidate(heroNotifierProvider),
                 child: const Text('Повторить'),
               ),
             ],
